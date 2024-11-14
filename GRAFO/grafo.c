@@ -2,33 +2,6 @@
 #include <stdlib.h>
 #include "grafo.h"
 
-// Estrutura de um livro
-typedef struct Livro {
-    int isbn;
-    char titulo[100];
-    char autor[100];
-    int ano_publicacao;
-    int quantidade;
-} Livro;
-
-// Estrutura de uma aresta para a relação entre livros
-typedef struct Aresta {
-    int peso;   // Peso da relação entre dois livros 
-    struct NoAdjacencia *destino;  // Ponteiro para o vértice relacionado
-} Aresta;
-
-// Estrutura de um nó na lista de adjacências
-typedef struct NoAdjacencia {
-    Livro *livro;     // Vértice que representa o livro
-    Aresta *arestas; // Lista de arestas para relações com outros livros
-    int num_arestas;     // Número de arestas
-} NoAdjacencia;
-
-// Grafo de livros com lista de adjacências
-typedef struct Grafo {
-    NoAdjacencia **vertices; // Lista de vértices
-    int num_vertices;        // Número de vértices no grafo
-} Grafo;
 
 // Função para criar um grafo vazio
 Grafo *criar(int num) { // num representa a quantidade máxima de vértices que pode ter no grafo
