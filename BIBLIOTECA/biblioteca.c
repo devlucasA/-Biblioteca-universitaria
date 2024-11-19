@@ -29,7 +29,7 @@ Livro* buscarLivroPorISBN(Biblioteca* biblioteca, int ISBN) {
         return (Livro*)node->data; // Retorna o ponteiro para o livro
     }
     return NULL;
-}
+}//
 
 void sugerirLivroPorRelacionamento(Biblioteca* biblioteca, int ISBN) {
     int index = ISBN % biblioteca->relacionamentos->numVertices;
