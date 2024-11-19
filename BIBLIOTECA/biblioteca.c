@@ -3,6 +3,7 @@
 #include <string.h>
 #include "biblioteca.h"
 
+
 Biblioteca* criarBiblioteca(int numLivros) {
     Biblioteca* biblioteca = (Biblioteca*)malloc(sizeof(Biblioteca));
     biblioteca->livrosPorISBN = createAVLTree();
@@ -17,14 +18,15 @@ void destruirBiblioteca(Biblioteca* biblioteca) {
 }
 */
 void inserirLivro(Biblioteca* biblioteca, Livro livro) {
-    insertNode(biblioteca->livrosPorISBN->root, livro.ISBN);
-    // Pode-se adicionar mais lógica aqui, como atualizar relacionamentos.
+    Livro* novoLivro = (Livro*)malloc(sizeof(Livro));
+    *novoLivro = livro; // Copia os dados do livro
+    biblioteca->livrosPorISBN->root = insertNode(biblioteca->livrosPorISBN->root, livro.ISBN, novoLivro);
 }
 
 Livro* buscarLivroPorISBN(Biblioteca* biblioteca, int ISBN) {
     Node* node = searchNode(biblioteca->livrosPorISBN->root, ISBN);
-    if (node != NULL) {
-        return (Livro*)node->data; // Assumindo que 'data' contém o ponteiro do livro
+    if (node != NULL && node->data != NULL) {
+        return (Livro*)node->data; // Retorna o ponteiro para o livro
     }
     return NULL;
 }
@@ -170,28 +172,26 @@ int contarNos(Node* node) {
 
 // Função recursiva para preencher um array com os livros da árvore AVL
 void preencherArray(Node* node, Livro* livros, int* index) {
-    if (node == NULL) {
+    if (node == NULL) 
         return;
-    }
 
-    // Recursão à esquerda
     preencherArray(node->left, livros, index);
 
-    // Adiciona o livro atual ao array
-    livros[*index] = *(Livro*)node->data;
-    (*index)++;
+    if (node->data != NULL) {
+        livros[*index] = *(Livro*)node->data; // Copia o livro para o array
+        (*index)++;
+    }
 
-    // Recursão à direita
     preencherArray(node->right, livros, index);
 }
 
-
 // Obtem todos os livros em um array a partir da AVLTree
 Livro* obterLivrosEmArray(AVLTree* tree, int* numLivros) {
-    if (tree == NULL) {
-        *numLivros = 0;
-        return NULL;
-    }
+    *numLivros = contarNos(tree->root);
+    Livro* livros = (Livro*)malloc(*numLivros * sizeof(Livro));
+    int index = 0;
+    preencherArray(tree->root, livros, &index);
+    return livros;
 }
     // Contar o número de nós (livros) na AVL
 

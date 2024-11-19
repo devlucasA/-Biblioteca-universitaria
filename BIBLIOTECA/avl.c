@@ -10,9 +10,10 @@ AVLTree* createAVLTree() {
 }
 
 // Função para criar um novo nó
-Node* createNode(int key) {
+Node* createNode(int key, void * data) {
     Node* node = (Node*)malloc(sizeof(Node));
     node->key = key;
+    node->data = data; //Armazena o livro
     node->height = 1;
     node->left = node->right = NULL;
     return node;
@@ -57,13 +58,14 @@ Node* rotateLeft(Node* x) {
 }
 
 // Função para inserir um nó na árvore AVL
-Node* insertNode(Node* node, int key) {
-    if (node == NULL) return createNode(key);
+Node* insertNode(Node* node, int key, void* data) {
+    if (node == NULL) 
+        return createNode(key, data);
 
     if (key < node->key)
-        node->left = insertNode(node->left, key);
+        node->left = insertNode(node->left, key, data);
     else if (key > node->key)
-        node->right = insertNode(node->right, key);
+        node->right = insertNode(node->right, key, data);
     else
         return node;
 
@@ -89,6 +91,7 @@ Node* insertNode(Node* node, int key) {
 
     return node;
 }
+
 
 // Função para buscar um nó na árvore AVL
 Node* searchNode(Node* root, int key) {

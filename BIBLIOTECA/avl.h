@@ -22,7 +22,7 @@ typedef struct AVLTree {
 AVLTree* createAVLTree();
 
 // Cria um novo nó com a chave fornecida
-Node* createNode(int key);
+Node* createNode(int key, void * data);
 
 // Função para obter a altura de um nó
 int height(Node* node);
@@ -35,7 +35,7 @@ Node* rotateRight(Node* y);
 Node* rotateLeft(Node* x);
 
 // Insere uma chave na árvore AVL e retorna a nova raiz
-Node* insertNode(Node* node, int key);
+Node* insertNode(Node* node, int key, void * data);
 
 // Remove uma chave da árvore AVL e retorna a nova raiz
 Node* deleteNode(Node* root, int key);
