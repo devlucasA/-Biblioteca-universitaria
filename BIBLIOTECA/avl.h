@@ -1,3 +1,4 @@
+
 #ifndef AVL_TREE_H
 #define AVL_TREE_H
 
@@ -7,6 +8,7 @@ typedef struct Node {
     int height;
     struct Node* left;
     struct Node* right;
+    void *data;
 } Node;
 
 // Estrutura da árvore AVL
@@ -52,4 +54,3 @@ void postOrder(Node* root);
 void freeTree(Node* root);
 
 #endif // AVL_TREE_H
-

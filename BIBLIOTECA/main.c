@@ -1,93 +1,99 @@
+
+#include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include "blib.h"
+#include "biblioteca.h"
 
 void menu() {
-    printf("\n===== Biblioteca Menu =====\n");
-    printf("1. Adicionar Livro\n");
-    printf("2. Remover Livro\n");
-    printf("3. Buscar Livro por Título\n");
-    printf("4. Relacionar Livros\n");
-    printf("5. Sugerir Livros Relacionados\n");
-    printf("6. Exibir Livros (In-ordem)\n");
-    printf("7. Sair\n");
-    printf("===========================\n");
-    printf("Escolha uma opção: ");
+    printf("\n========== MENU BIBLIOTECA ==========\n");
+    printf("1. Adicionar livro\n");
+    printf("2. Buscar livro por ISBN\n");
+    printf("3. Listar livros ordenados\n");
+    printf("4. Sugerir livros relacionados\n");
+    printf("5. Sair\n");
+    printf("=====================================\n");
+    printf("Escolha uma opcao: ");
+}
+
+void printLivro(Livro livro) {
+    printf("\n--- Detalhes do Livro ---\n");
+    printf("ISBN: %d\n", livro.ISBN);
+    printf("Titulo: %s\n", livro.titulo);
+    printf("Autor: %s\n", livro.autor);
+    printf("Ano de Publicacao: %d\n", livro.anoPublicacao);
+    printf("-------------------------\n");
 }
 
 int main() {
-    Biblioteca* biblioteca = inicializaBiblioteca(100); // Inicializa biblioteca com 100 vértices no grafo (ajuste conforme necessário)
-    int opcao, id1, id2;
-    char titulo[100], autor[100];
+    Biblioteca* biblioteca = criarBiblioteca(100); // Inicializa com capacidade para 100 livros
+    int opcao;
 
-    while (1) {
+    do {
         menu();
         scanf("%d", &opcao);
-        getchar();  // Limpar o buffer após leitura de números
 
         switch (opcao) {
-            case 1:
-                printf("Digite o ID do livro: ");
-                scanf("%d", &id1);
-                getchar();
-                
-                printf("Digite o título do livro: ");
-                fgets(titulo, sizeof(titulo), stdin);
-                titulo[strcspn(titulo, "\n")] = '\0'; // Remove o newline
-                
+            case 1: {
+                Livro novoLivro;
+                printf("\nDigite o ISBN do livro: ");
+                scanf("%d", &novoLivro.ISBN);
+                printf("Digite o titulo do livro: ");
+                getchar(); // Consumir o '\n' restante
+                fgets(novoLivro.titulo, sizeof(novoLivro.titulo), stdin);
+                strtok(novoLivro.titulo, "\n"); // Remover o '\n' do final
                 printf("Digite o autor do livro: ");
-                fgets(autor, sizeof(autor), stdin);
-                autor[strcspn(autor, "\n")] = '\0'; // Remove o newline
-                
-                Livro livro;
-                livro.id = id1;
-                strcpy(livro.titulo, titulo);
-                strcpy(livro.autor, autor);
+                fgets(novoLivro.autor, sizeof(novoLivro.autor), stdin);
+                strtok(novoLivro.autor, "\n");
+                printf("Digite o ano de publicacao: ");
+                scanf("%d", &novoLivro.anoPublicacao);
 
-                adicionaLivro(biblioteca, livro);
+                inserirLivro(biblioteca, novoLivro);
+                printf("\nLivro adicionado com sucesso!\n");
                 break;
-                
-            case 2:
-                printf("Digite o ID do livro a ser removido: ");
-                scanf("%d", &id1);
-                removeLivro(biblioteca, id1);
+            }
+            case 2: {
+                int ISBN;
+                printf("\nDigite o ISBN do livro que deseja buscar: ");
+                scanf("%d", &ISBN);
+
+                Livro* livro = buscarLivroPorISBN(biblioteca, ISBN);
+                if (livro != NULL) {
+                    printLivro(*livro);
+                } else {
+                    printf("\nLivro nao encontrado!\n");
+                }
                 break;
-                
-            case 3:
-                printf("Digite o título do livro a ser buscado: ");
-                fgets(titulo, sizeof(titulo), stdin);
-                titulo[strcspn(titulo, "\n")] = '\0'; // Remove o newline
-                buscaLivroPorTitulo(biblioteca, titulo);
+            }
+            case 3: {
+                int tamanho;
+                Livro* livros = livrosOrdenados(biblioteca, &tamanho);
+                if (tamanho > 0) {
+                    printf("\nLivros ordenados:\n");
+                    for (int i = 0; i < tamanho; i++) {
+                        printLivro(livros[i]);
+                    }
+                    free(livros);
+                } else {
+                    printf("\nNao ha livros cadastrados.\n");
+                }
                 break;
-                
-            case 4:
-                printf("Digite o ID do primeiro livro: ");
-                scanf("%d", &id1);
-                printf("Digite o ID do segundo livro: ");
-                scanf("%d", &id2);
-                relacionaLivros(biblioteca, id1, id2);
+            }
+            case 4: {
+                int ISBN;
+                printf("\nDigite o ISBN do livro para sugestoes: ");
+                scanf("%d", &ISBN);
+                sugerirLivroPorRelacionamento(biblioteca, ISBN);
                 break;
-                
+            }
             case 5:
-                printf("Digite o ID do livro para sugestões de relacionados: ");
-                scanf("%d", &id1);
-                sugereLivros(biblioteca, id1);
+                printf("\nSaindo do programa...\n");
                 break;
-                
-            case 6:
-                printf("Livros na biblioteca (In-ordem): ");
-                inOrder(biblioteca->livrosAVL->root);
-                printf("\n");
-                break;
-                
-            case 7:
-                liberaBiblioteca(biblioteca);
-                printf("Saindo do programa...\n");
-                return 0;
-                
             default:
-                printf("Opção inválida! Tente novamente.\n");
+                printf("\nOpcao invalida! Tente novamente.\n");
         }
-    }
+    } while (opcao != 5);
+
+    // Libera memória da biblioteca antes de encerrar
+    // destruirBiblioteca(biblioteca);
+    return 0;
 }
