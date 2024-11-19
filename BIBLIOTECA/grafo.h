@@ -9,7 +9,7 @@ typedef struct AdjNode {
     int weight;
     struct AdjNode* next;
     void* data;
-} AdjNode;//
+} AdjNode;
 
 // Estrutura para a lista de adjacência de um vértice
 typedef struct AdjList {
